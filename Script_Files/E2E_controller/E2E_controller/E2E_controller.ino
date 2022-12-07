@@ -24,7 +24,7 @@ void setup() {
   Serial.begin(115200);
   
   extrMotor.setMaxSpeed(3000); // to limit the value of setSpeed()   
-  extrMotor.setSpeed(2600);
+  extrMotor.setSpeed(2800);
   // Declare pins:
   pinMode(relay_1, OUTPUT);
   pinMode(urAO_0, INPUT);
@@ -69,7 +69,6 @@ void extrusion()
   */
   
   digitalWrite(relay_1, HIGH);
-  
   extrMotor.runSpeed();
   currentPos = extrMotor.currentPosition();
   if (currentPos%10 == 0)

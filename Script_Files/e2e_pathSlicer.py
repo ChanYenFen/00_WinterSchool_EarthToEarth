@@ -37,8 +37,7 @@ def divide_crvs(crvs, seg_len, endInc, returnNest):
             wayPoints_nList.append(points)
         else:
             wayPoints_nList.extend(points)
-    return wayPoints_nList
-        
+    return wayPoints_nList 
 
 def rhino_to_robot_space(plane, rhino_centerPt, robot_centerPt):
     rhino_centerPlane = rg.Plane(rhino_centerPt, rg.Vector3d.XAxis, rg.Vector3d.YAxis)
@@ -47,21 +46,47 @@ def rhino_to_robot_space(plane, rhino_centerPt, robot_centerPt):
     plane.Transform(T)
     return plane
 
-def contour(srf, base_pt, layer_thickness):
-    contours = []
-    height_valuse = []
+def contour_XY(brep, layer_height, simplify):
+    contour_crvs =[]
+    bbox = rg.Brep.GetBoundingBox(brep, rg.Plane.WorldXY)
+    lowest_pt = bbox.Min
+    highest_pt = bbox.Max
+    #print (bbox.Min)
+    #print (bbox.Max)
+    contour_range = int((highest_pt.Z-lowest_pt.Z)/layer_height) +1
+    normal =  rg.Vector3d(0,0,1)
+    #planes=[]
+
+    for i in range(contour_range):
+        plane_ori = lowest_pt + normal*layer_height*i
+        intersection_plane = rg.Plane(plane_ori, rg.Vector3d.XAxis, rg.Vector3d.YAxis)
+        #planes.append(intersection_plane)
+        intersection_events = rg.Intersect.Intersection.BrepPlane(brep, intersection_plane,0.01)
+        if intersection_events[0]:
+            layer_crvs = intersection_events[1]
+            if len(layer_crvs)>1:
+                layer_crvs = rg.Curve.JoinCurves(layer_crvs)
+            for crv in layer_crvs:
+                if simplify:
+                    crv.Simplify(rg.CurveSimplifyOptions.All, distanceTolerance=0.01, angleToleranceRadians=0.01)
+                contour_crvs.append(crv)
+    return contour_crvs
+    
+def contour(srf, inter_origin, normal, layer_height, simplify):
+    contour_crvs =[]
     for i in range(1000):
-        intersection_plane = rg.Plane(rg.Point3d(0,0,base_pt.Z+layer_thickness *i), rg.Vector3d.XAxis, rg.Vector3d.YAxis)
+        intersection_plane = rg.Plane(inter_origin+normal*i, rg.Vector3d.XAxis, rg.Vector3d.YAxis)
         intersection_events = rg.Intersect.Intersection.BrepPlane(srf, intersection_plane,0.01)
 
         if intersection_events[0]:
             layer_crvs = intersection_events[1]
+            if len(layer_crvs)>1:
+                layer_crvs = rg.Curve.JoinCurves(layer_crvs)
             for crv in layer_crvs:
-                ref_pt = crv.PointAt(0)
-                ref_ptZ = round(ref_pt.Z,2)
-                contours.append(crv)
-                height_valuse.append(ref_ptZ)
-    return contours, height_valuse
+                if simplify:
+                    crv.Simplify(rg.CurveSimplifyOptions.All, distanceTolerance=0.01, angleToleranceRadians=0.01)
+                contour_crvs.append(crv)
+    return contour_crvs
 
 def find_offset_distance(interval):
     return m.sin(m.radians(60))*interval
