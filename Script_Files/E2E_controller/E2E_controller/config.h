@@ -12,7 +12,6 @@ Basic parameters for AAM USI clay printing setup
 #define relay_3 8
 #define relay_4 12
 
-
 /* Setting up motor step value */
 #define stepPerRevolution 200
 

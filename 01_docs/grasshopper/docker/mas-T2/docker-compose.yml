@@ -1,0 +1,13 @@
+version: '2'
+services:
+  ros-moveit:
+    image: gramaziokohler/ros-ur-planner:20.11
+    container_name: ros-moveit
+    ports:
+      - "9090:9090"
+    command:
+      - roslaunch
+      - /root/catkin_ws/launch/main.launch
+    volumes:
+      - ./bag-files:/root/catkin_ws/bag-files
+      - ./launch:/root/catkin_ws/launch

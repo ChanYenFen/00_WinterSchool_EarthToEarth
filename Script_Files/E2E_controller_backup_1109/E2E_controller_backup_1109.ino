@@ -1,56 +1,64 @@
 #include "config.h"
+#include <Stepper.h>
 
 int toExtrude = -1;
 
-void setup() {
-  Serial.begin(115200);
+Stepper myStepper(stepPerRevolution,dirPin, stepPin);
 
-  // Dclare pins as output:
-  pinMode(dirPin, OUTPUT);
-  pinMode(stepPin, OUTPUT);
+void setup() {
+  Serial.begin(9600);
+  // Declare pins:
   pinMode(relay_1, OUTPUT);
   pinMode(urAO_0, INPUT);
   digitalRead(urAO_0);
+  // ************
+  
+  pinMode(stepPin, OUTPUT);
+  pinMode(dirPin, OUTPUT);
+
+  //60rpm = 1rps
+  myStepper.setSpeed(100*4);
+  
 
 }
 
-void loop() {
-  
+void loop() 
+{
   // ******Tracking UR signals******
   toExtrude = digitalRead(urAO_0);
+  // *******************************
 
-  if (toExtrude) 
+  if (toExtrude == HIGH ) 
   {
-    // motor spining
     digitalWrite(relay_1, HIGH);
-    Serial.println("Motor is running");
-    digitalWrite(dirPin, LOW);
-    
-    for (int i=0; i < 200; i++)
-    {
-      digitalWrite(stepPin, HIGH);
-      delayMicroseconds(500);
-      digitalWrite(stepPin, LOW);
-      delayMicroseconds(500);
-    }
-   }
-  else if (toExtrude ==0)
-  {
-//    // implement retraction here for the moment
-//    digitalWrite(relay_1, HIGH);
-//    digitalWrite(dirPin,HIGH);
-//    for (int i=0; i < 2; i++)
-//    {
-//      digitalWrite(stepPin, HIGH);
-//      delayMicroseconds(500);
-//      digitalWrite(stepPin, LOW);
-//      delayMicroseconds(500);
-//    }
-//    
-    // motor STOP spining
-    digitalWrite(relay_1, LOW);
-    Serial.println("Motor is off");
+    extrusionL();
   }
+  
+  /*else if (toExtrude == 0)
+  { 
+    retraction();
+  }*/
+}
 
+void extrusion()
+{
+  digitalWrite(dirPin, HIGH);
+
+  digitalWrite(stepPin, HIGH);
+  delayMicroseconds(400);
+  digitalWrite(stepPin, LOW);
+  delayMicroseconds(400);
+}
+
+void extrusionL()
+{
+  myStepper.step(1);
+//  delay(500);
+}
+
+void testRevolution()
+{
+  myStepper.step(stepPerRevolution);
+  delay(300);
 
 }

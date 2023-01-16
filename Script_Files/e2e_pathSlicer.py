@@ -4,7 +4,7 @@ import csv
 import Rhino.Geometry as rg
 import math as m
 
-def calc_blendRadius(new_pts, buffer=0.1):
+def calc_blendRadius(new_pts, buffer=0.001):
     blend_radiuses = []
     for i in range(len (new_pts)-1):
         pt = new_pts[i]
@@ -12,7 +12,7 @@ def calc_blendRadius(new_pts, buffer=0.1):
         dist = pt.DistanceTo(pt_1)
         blend_radius = dist*buffer
         blend_radiuses.append(blend_radius)
-    blend_radiuses.append(blend_radiuses[-1])
+    blend_radiuses.append(blend_radiuses[-1]*0.4)
     return blend_radiuses
 
 def divide_crv(crv, seg_len, endInc):
@@ -51,16 +51,10 @@ def contour_XY(brep, layer_height, simplify):
     bbox = rg.Brep.GetBoundingBox(brep, rg.Plane.WorldXY)
     lowest_pt = bbox.Min
     highest_pt = bbox.Max
-    #print (bbox.Min)
-    #print (bbox.Max)
     contour_range = int((highest_pt.Z-lowest_pt.Z)/layer_height) +1
-    normal =  rg.Vector3d(0,0,1)
-    #planes=[]
-
     for i in range(contour_range):
-        plane_ori = lowest_pt + normal*layer_height*i
+        plane_ori = lowest_pt + rg.Vector3d(0,0,1)*layer_height*i
         intersection_plane = rg.Plane(plane_ori, rg.Vector3d.XAxis, rg.Vector3d.YAxis)
-        #planes.append(intersection_plane)
         intersection_events = rg.Intersect.Intersection.BrepPlane(brep, intersection_plane,0.01)
         if intersection_events[0]:
             layer_crvs = intersection_events[1]

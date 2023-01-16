@@ -18,13 +18,11 @@ bool hasRetr;
 
 AccelStepper extrMotor(AccelStepper::DRIVER , stepPin, dirPin); 
 
-
-
 void setup() {
   Serial.begin(115200);
   
-  extrMotor.setMaxSpeed(3000); // to limit the value of setSpeed()   
-  extrMotor.setSpeed(2800);
+  extrMotor.setMaxSpeed(2000); // to limit the value of setSpeed()   
+  //extrMotor.setSpeed(200);
   // Declare pins:
   pinMode(relay_1, OUTPUT);
   pinMode(urAO_0, INPUT);
@@ -69,38 +67,19 @@ void extrusion()
   */
   
   digitalWrite(relay_1, HIGH);
+  extrMotor.setSpeed(100);
   extrMotor.runSpeed();
   currentPos = extrMotor.currentPosition();
   if (currentPos%10 == 0)
   {Serial.println(positionPr + currentPos);}
 
-  hasExtr = true;
-  hasRetr = false;
-  retrCount = 0;
+//  hasExtr = true;
+//  hasRetr = false;
+//  retrCount = 0;
 }
-
+/*
 void retraction()
 {
-  /*
-  for retraction the code below contains 4 parts:
-  1. retraction happens in a while loop if the target step's not reached
-  2. initialize stepper motor and power, then spin
-  3. print out current position every 10 steps
-  4. reset parameters for extrusion afterwards
-  */
-  extrMotor.setSpeed(-1000);
-  digitalWrite(relay_1, HIGH);
   
-  while (retrCount < retrSteps)
-  {
-    extrMotor.runSpeed();
-    retrCount++;
-    
-    if (retrCount%10 == 0)
-    {Serial.println(retrPr + retrCount);}
-  }
-  
-  digitalWrite(relay_1, LOW);
-  hasExtr = false;
-  hasRetr = true;
-}
+
+}*/
