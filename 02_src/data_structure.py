@@ -25,7 +25,7 @@ def remapValue(v,ori_Min,ori_Max,targetMin,targetMax):
     
 def duplicate_data(nlist, value):
     """
-    This function duplicate value as many as the length of a nested list
+    This function duplicate values as many as the length of a nested list
     """
     new_nlist = []
     for l in nlist:

@@ -32,7 +32,7 @@
   <link name="base_link">
     <visual>
       <geometry>
-        <mesh filename="package://robot_description/meshes/base_rotated.stl"/>
+        <mesh filename="package://robot_description/meshes/base_bachmann.stl"/>
       </geometry>
       <material name="LightGrey">
         <color rgba="0.7 0.7 0.7 1.0"/>
@@ -40,7 +40,7 @@
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://robot_description/meshes/base_rotated.stl"/>
+        <mesh filename="package://robot_description/meshes/base_bachmann.stl"/>
       </geometry>
     </collision>
     <inertial>
@@ -226,7 +226,7 @@
   <link name="ee_link">
       <visual>
       <geometry>
-        <mesh filename="package://robot_description/meshes/end_effector.stl"/>
+        <mesh filename="package://robot_description/meshes/end_effector_e2e.stl"/>
       </geometry>
        <origin rpy="0 0 0" xyz="-0.107 0 -0.02"/>
       <material name="LightGrey">
@@ -235,7 +235,7 @@
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://robot_description/meshes/end_effector.stl"/>
+        <mesh filename="package://robot_description/meshes/end_effector_e2e.stl"/>
       </geometry>
       <origin rpy="0 0 0" xyz="-0.107 0 -0.02"/>
     </collision>
